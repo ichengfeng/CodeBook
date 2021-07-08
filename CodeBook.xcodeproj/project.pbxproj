@@ -10,6 +10,7 @@
 		04741A6B269583AC00970FDA /* StackViewDemoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04741A69269583AC00970FDA /* StackViewDemoController.swift */; };
 		04741A6C269583AC00970FDA /* StackViewDemoController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04741A6A269583AC00970FDA /* StackViewDemoController.xib */; };
 		04741A722696A0B600970FDA /* PredicateTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04741A712696A0B600970FDA /* PredicateTestViewController.m */; };
+		04741A762696EE2C00970FDA /* GirlFriendModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04741A752696EE2C00970FDA /* GirlFriendModel.m */; };
 		0474FD81269440D300970FDA /* StackViewTestController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0474FD80269440D300970FDA /* StackViewTestController.m */; };
 		0474FD852694437000970FDA /* StackItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0474FD842694437000970FDA /* StackItemView.m */; };
 		049610472689A90300C9C6E3 /* QRCodeTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 049610462689A90300C9C6E3 /* QRCodeTestViewController.m */; };
@@ -122,6 +123,8 @@
 		04741A6A269583AC00970FDA /* StackViewDemoController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StackViewDemoController.xib; sourceTree = "<group>"; };
 		04741A702696A0B600970FDA /* PredicateTestViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PredicateTestViewController.h; sourceTree = "<group>"; };
 		04741A712696A0B600970FDA /* PredicateTestViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PredicateTestViewController.m; sourceTree = "<group>"; };
+		04741A742696EE2C00970FDA /* GirlFriendModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GirlFriendModel.h; sourceTree = "<group>"; };
+		04741A752696EE2C00970FDA /* GirlFriendModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GirlFriendModel.m; sourceTree = "<group>"; };
 		0474FD7F269440D300970FDA /* StackViewTestController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StackViewTestController.h; sourceTree = "<group>"; };
 		0474FD80269440D300970FDA /* StackViewTestController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StackViewTestController.m; sourceTree = "<group>"; };
 		0474FD832694437000970FDA /* StackItemView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StackItemView.h; sourceTree = "<group>"; };
@@ -330,10 +333,20 @@
 		04741A6D2696A07000970FDA /* Predicate */ = {
 			isa = PBXGroup;
 			children = (
+				04741A732696EDD900970FDA /* Model */,
 				04741A702696A0B600970FDA /* PredicateTestViewController.h */,
 				04741A712696A0B600970FDA /* PredicateTestViewController.m */,
 			);
 			path = Predicate;
+			sourceTree = "<group>";
+		};
+		04741A732696EDD900970FDA /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				04741A742696EE2C00970FDA /* GirlFriendModel.h */,
+				04741A752696EE2C00970FDA /* GirlFriendModel.m */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		0474FD7E269440AC00970FDA /* StackView */ = {
@@ -1197,6 +1210,7 @@
 				71F011D722E46E9A0085B41E /* TransformViewController.m in Sources */,
 				04BE7A422684261800C8BC92 /* XCCategoryTitleCellModel.m in Sources */,
 				7190F07C22E2180B0029F7DF /* MasonryViewController.m in Sources */,
+				04741A762696EE2C00970FDA /* GirlFriendModel.m in Sources */,
 				0CACE730229BEC5100B02EFA /* IQUIScrollView+Additions.m in Sources */,
 				0CACE6E8229BE75000B02EFA /* UIView+WhenTappedBlocks.m in Sources */,
 				04BE7958267C7B7D00C8BC92 /* PagerCategoryView.m in Sources */,

@@ -45,6 +45,12 @@
     [self setupIQKeyBoardManager];
     //友盟分享
     
+    #if DEBUG
+    //添加InjectionIII
+        NSBundle *injectionBundle = [NSBundle bundleWithPath:@"/Applications/InjectionIII.app/Contents/Resources/iOSInjection.bundle"];
+        [injectionBundle load];
+    #endif
+    
 }
 
 - (void)loadTabBarController {
