@@ -1,0 +1,16 @@
+//
+//  UIViewController+FindUIViewController.h
+//  qclanzhouribao
+//
+//  Created by heartjoy on 13-10-24.
+//  Copyright (c) 2013年 apple. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+@interface UIView (FindUIViewController)
+
+//用于获取view的第一个控制器响应者
+
+- (UIViewController *)viewController;
+@end

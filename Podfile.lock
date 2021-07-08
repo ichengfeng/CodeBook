@@ -1,0 +1,90 @@
+PODS:
+  - AFNetworking (4.0.1):
+    - AFNetworking/NSURLSession (= 4.0.1)
+    - AFNetworking/Reachability (= 4.0.1)
+    - AFNetworking/Security (= 4.0.1)
+    - AFNetworking/Serialization (= 4.0.1)
+    - AFNetworking/UIKit (= 4.0.1)
+  - AFNetworking/NSURLSession (4.0.1):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (4.0.1)
+  - AFNetworking/Security (4.0.1)
+  - AFNetworking/Serialization (4.0.1)
+  - AFNetworking/UIKit (4.0.1):
+    - AFNetworking/NSURLSession
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
+  - JXCategoryView (1.5.9)
+  - JXPagingView/Pager (2.1.0)
+  - LBXScan/LBXZXing (2.5.1):
+    - LBXScan/Types (~> 2.2)
+  - LBXScan/Types (2.5.1)
+  - LBXZBarSDK (1.3.5)
+  - Masonry (1.1.0)
+  - MJRefresh (3.1.15.7)
+  - NormalTools (1.0.3):
+    - YYCategories (~> 1.0.4)
+  - SDWebImage (4.4.3):
+    - SDWebImage/Core (= 4.4.3)
+  - SDWebImage/Core (4.4.3)
+  - SGQRCode (3.5.0)
+  - YYCategories (1.0.4):
+    - YYCategories/no-arc (= 1.0.4)
+  - YYCategories/no-arc (1.0.4)
+
+DEPENDENCIES:
+  - AFNetworking
+  - FMDB
+  - JXCategoryView (from `https://github.com/pujiaxin33/JXCategoryView.git`)
+  - JXPagingView/Pager
+  - LBXScan/LBXZXing (~> 2.5)
+  - LBXZBarSDK (~> 1.3)
+  - Masonry
+  - MJRefresh
+  - NormalTools (= 1.0.3)
+  - SDWebImage
+  - SGQRCode (~> 3.5.0)
+
+SPEC REPOS:
+  trunk:
+    - AFNetworking
+    - FMDB
+    - JXPagingView
+    - LBXScan
+    - LBXZBarSDK
+    - Masonry
+    - MJRefresh
+    - NormalTools
+    - SDWebImage
+    - SGQRCode
+    - YYCategories
+
+EXTERNAL SOURCES:
+  JXCategoryView:
+    :git: https://github.com/pujiaxin33/JXCategoryView.git
+
+CHECKOUT OPTIONS:
+  JXCategoryView:
+    :commit: 126b99ebeb6173dd061ff094347a3e20df67faa9
+    :git: https://github.com/pujiaxin33/JXCategoryView.git
+
+SPEC CHECKSUMS:
+  AFNetworking: 7864c38297c79aaca1500c33288e429c3451fdce
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  JXCategoryView: 2ef9ecfd3735158d009ce02d1f29811aa822da65
+  JXPagingView: ef48a5a2392252c68db7999de38f4761a2707e2a
+  LBXScan: 90ca10d0c38fb4a5a6980d7782354f3f69f50093
+  LBXZBarSDK: db826d1265fbb4fbdbb2f30d7d1e96142e32bfff
+  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
+  MJRefresh: 697f8ec75ebdbe9207767bb682cf0f51b0d8a41f
+  NormalTools: 04c9e6a3ad4e9903b4189ccc224f321ae0acee0b
+  SDWebImage: c5594f1a19c48d526d321e548902b56b479cd508
+  SGQRCode: d92dd8bd2af665b7e0d76098c5b70e59d2a2609f
+  YYCategories: 6bcd4314c6661a561410dce4a793379ebd306abd
+
+PODFILE CHECKSUM: 22cd45c99143b168a03101b8af1037d87f879217
+
+COCOAPODS: 1.10.1

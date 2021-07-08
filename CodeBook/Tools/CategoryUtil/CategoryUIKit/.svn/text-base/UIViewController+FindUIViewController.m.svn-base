@@ -1,0 +1,28 @@
+//
+//  UIViewController+FindUIViewController.m
+//  qclanzhouribao
+//
+//  Created by heartjoy on 13-10-24.
+//  Copyright (c) 2013年 apple. All rights reserved.
+//
+
+#import "UIViewController+FindUIViewController.h"
+
+@implementation UIView (FindUIViewController)
+// Get to UIViewController from UIView on iPhone?
+// http://stackoverflow.com/a/3732812/1104158
+
+- (UIViewController *)viewController
+{
+    /// Finds the view's view controller.
+    
+    // Traverse responder chain. Return first found view controller, which will be the view's view controller.
+    UIResponder *responder = self;
+    while ((responder = [responder nextResponder]))
+        if ([responder isKindOfClass: [UIViewController class]])
+            return (UIViewController *)responder;
+    
+    // If the view controller isn't found, return nil.
+    return nil;
+}
+@end

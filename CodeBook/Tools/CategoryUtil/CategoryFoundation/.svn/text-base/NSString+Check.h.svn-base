@@ -1,0 +1,110 @@
+//
+//  NSString+Check.h
+//  BD
+//
+//  Created by Podinn on 2017/9/11.
+//  Copyright © 2017年 杭州睿创科技有限公司. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+/**
+ 字符串校验
+ */
+@interface NSString (Check)
+
+/*!
+ @method
+ @abstract 判断字符串全是数字
+ @return YES，是 NO，否
+ */
+- (BOOL)isAllNumber;
+
+/*!
+ @method
+ @abstract 判断是否含有符号
+ @return YES，是 NO，否
+ */
+- (BOOL)isContainSign;
+
+/*!
+ @method
+ @abstract 判断是否含有大写字母
+ @return YES，是 NO，否
+ */
+- (BOOL)isContainCapital;
+
+/*!
+ @method
+ @abstract 判断密码是否符合要求
+ @return YES，是 NO，否
+ */
+- (BOOL)isConform;
+
+/*!
+ @method
+ @abstract 判断符合真实姓名格式
+ @return YES，是 NO，否
+ */
+- (BOOL)isTrueName;
+
+/*!
+ @method
+ @abstract 判断是否符合身份证号码格式
+ @return YES，是 NO，否
+ */
+- (BOOL)isIdentityCardNumber;
+
+/*!
+ @method
+ @abstract 获取缓存目录
+ @return YES，是 NO，否
+ */
+// 手机号码
+- (BOOL)isPhoneNumber;
+
+/**
+ *  判断是否是电话号码
+ *
+ *  @param text 外面输入的文本
+ *
+ *  @return bool值
+ */
+- (BOOL)isPhoneNumber:(NSString *)text;
+/*!
+ @method
+ @abstract 获取缓存目录
+ @return YES，是 NO，否
+ */
+// 邮箱
+- (BOOL)isEmail;
+
+/*!
+ @method
+ @abstract 判断是否符合中国邮政编码格式
+ @return YES，是 NO，否
+ */
+- (BOOL)isPostalCode;
+
+/*!
+ @method
+ @abstract 判断是否是QQ号码
+ @return YES，是 NO，否
+ */
+- (BOOL)isQQNumber;
+
+/*!
+ @method
+ @abstract 判断是否为生日格式
+ @return YES，是 NO，否
+ */
+- (BOOL)isBirthday;
+
+/*!
+ @method
+ @abstract 判断字符串头部是否含有"OK"
+ @return 返回结果
+ */
+- (BOOL)comparePrefixStringForOK;
+
+@end

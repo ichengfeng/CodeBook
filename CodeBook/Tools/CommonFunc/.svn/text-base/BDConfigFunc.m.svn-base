@@ -1,0 +1,219 @@
+//
+//  BDConfigFunc.m
+//  BD
+//
+//  Created by Podinn on 2017/9/11.
+//  Copyright © 2017年 杭州睿创科技有限公司. All rights reserved.
+//
+
+#import "BDConfigFunc.h"
+
+@interface BDConfigFunc ()
+
+@end
+
+@implementation BDConfigFunc
+/**
+ 单例
+ @return 返回自身
+ */
++ (id)shareInstance {
+    
+    static BDConfigFunc *instance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        instance = [[BDConfigFunc alloc] init];
+    });
+    return instance;
+}
+
+/**
+ 配置初始化
+ */
+- (void)initialize {
+    //初始化当前城市
+    
+    //初始化当前语言
+    
+}
+
+#pragma mark ------------------- Login -------------------
+
+/**
+ 载入用户账号（手机号／邮箱／卡号）
+
+ @param userName 用户账号
+ */
+- (void)saveUsername:(NSString *)userName {
+    
+    if (userName) {
+        [DataCache writeCache:userName forKey:KEY_USERNAME];
+    }
+}
+
+/**
+ 获取登录用户名
+
+ @return 登录用户名
+ */
+- (NSString *)userName {
+
+    if ([DataCache readCacheforKey:KEY_USERNAME]) {
+        return [DataCache readCacheforKey:KEY_USERNAME];
+    }
+    return @"";
+}
+
+
+/**
+ 载入密码
+
+ @param password 密码
+ */
+- (void)savePassword:(NSString *)password {
+    
+    if (password) {
+        [DataCache writeCache:password forKey:KEY_PASSWORD];
+    }
+}
+
+- (NSString *)password {
+    
+    if ([DataCache readCacheforKey:KEY_PASSWORD]) {
+        return [DataCache readCacheforKey:KEY_PASSWORD];
+    }
+    return @"";
+}
+
+/**
+ 删除登录的账号
+ */
+- (void)removeUserName
+{
+    [DataCache removeCacheForKey:KEY_USERNAME];
+}
+
+/**
+ 删除登录用户的密码
+ */
+- (void)removeUserPassword
+{
+    [DataCache removeCacheForKey:KEY_PASSWORD];
+}
+
+/**
+ 保存是否是商旅卡
+
+ @param isTravel 是否是商旅卡
+ */
+- (void)saveIsTravel:(BOOL)isTravel {
+    [DataCache writeCache:[NSNumber numberWithBool:isTravel] forKey:KEY_IS_BUSINESS_USER];
+}
+
+///**
+// 获取是否是商旅用户
+// @return 返回是否是商旅用户
+// */
+//- (BOOL)isTravel {
+//    if ([DataCache readCacheforKey:KEY_IS_BUSINESS_USER]) {
+//        return [[DataCache readCacheforKey:KEY_IS_BUSINESS_USER] boolValue];
+//    }
+//    return NO;
+//}
+
+/**
+ 选择城市名
+ @param cityName 城市名
+ */
+- (void)saveCityName:(NSString *)cityName {
+    [DataCache writeCache:cityName forKey:KEY_SELECTED_CITY_NAME];
+}
+
+/**
+ 获取选择城市名
+ @return 返回选择城市名，没有则返回nil
+ */
+- (NSString *)cityName {
+    if ([DataCache readCacheforKey:KEY_SELECTED_CITY_NAME]) {
+        return [DataCache readCacheforKey:KEY_SELECTED_CITY_NAME];
+    }
+    return nil;
+}
+
+/**
+ 选择城市id
+ @param cityId 城市id
+ */
+- (void)saveCityId:(NSString *)cityId {
+    [DataCache writeCache:cityId forKey:KEY_SELECTED_CITY_ID];
+}
+
+/**
+ 获取选择城市id
+ @return 返回选择城市id，没有则返回nil
+ */
+- (NSString *)cityId {
+    if ([DataCache readCacheforKey:KEY_SELECTED_CITY_ID]) {
+        return [DataCache readCacheforKey:KEY_SELECTED_CITY_ID];
+    }
+    return nil;
+}
+
+
+
+/**
+ *  存储是否要显示日历的状态值
+ *
+ *  @param state 状态bool值
+ */
+- (void)saveIsShowcalendarTips:(BOOL)state
+{
+    [DataCache writeCache:[NSNumber numberWithBool:state] forKey:KIsShowcalendarTips];
+}
+
+/**
+ *  获取是否要显示日历的状态
+ *
+ *  @return bool值
+ */
+- (BOOL)isShowcalendarTips
+{
+    if ([DataCache readCacheforKey:KIsShowcalendarTips])
+    {
+        return [[DataCache readCacheforKey:KIsShowcalendarTips] boolValue];
+    }
+    return NO;
+}
+
+
+/**
+ @method
+ @abstract 保存第三方免责声明的状态
+ @param state 第三方免责声明的状态
+ */
+- (void)saveThirdReliefInfoState:(BOOL)state withKeyStr:(NSString *)keyStr
+{
+    [DataCache writeCache:[NSNumber numberWithBool:state] forKey:keyStr];
+}
+
+/**
+ @method
+ @abstract 获取第三方免责声明的状态
+ @return 返回第三方免责声明的状态
+ */
+- (BOOL)getThirdReliefInfoStateWithKey:(NSString *)keyStr
+{
+    if ([DataCache readCacheforKey:keyStr])
+    {
+        return [[DataCache readCacheforKey:keyStr] boolValue];
+    }
+    return NO;
+}
+
+
+
+
+
+
+
+@end

@@ -1,0 +1,321 @@
+//
+//  BDConfigFunc.h
+//  BD
+//
+//  Created by Podinn on 2017/9/11.
+//  Copyright © 2017年 杭州睿创科技有限公司. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import <CoreLocation/CoreLocation.h>
+
+#define BDCF ((BDConfigFunc *)[BDConfigFunc shareInstance])
+
+@interface BDConfigFunc : NSObject
+
+#pragma mark ------------------- Login -------------------
+
+@property (strong, nonatomic)BDDataForLoginObject *dataForLoginObject;
+
+@property (strong, nonatomic)BDDataForUserInfoObject *dataForUserInfoObject;
+
+@property (strong, nonatomic)BDDataForMemberCardObject *dataForMemberCardObject;
+
+/**
+ 登录的用户帐号
+ */
+@property (strong, nonatomic)NSString *userName;
+
+/**
+ 登录密码
+ */
+@property (strong, nonatomic)NSString *password;
+
+/**
+ 是否是商旅卡
+ */
+//@property (assign, nonatomic)BOOL isTravel;
+
+/**
+ 是否登录
+ */
+@property (assign, nonatomic)BOOL isLogin;
+
+/**
+ 是否是点击了退出登录
+ */
+@property (assign, nonatomic)BOOL isLoginOut;
+
+#pragma mark ------------------- My -------------------
+/**
+ 选中的会员卡ID的下标
+ */
+@property (assign,nonatomic)NSInteger selectMemberCardIndex;
+
+/**
+ 我的会员卡数组
+ */
+@property (nonatomic, retain) NSArray *myMembershipCardArray;
+
+/**
+ 选择某个充值金额索引
+ */
+@property (nonatomic, assign) NSUInteger selectedRechangeCashIndex;
+
+#pragma mark ------------------- Home -------------------
+/**
+ 纬度
+ */
+@property (nonatomic, assign) double latitude;
+
+/**
+ 经度
+ */
+@property (nonatomic, assign) double longitude;
+
+/**
+ 百度定位的位置信息
+ */
+@property (strong, nonatomic) CLLocation *baiduLocation;
+
+/**
+ 百度定位到的城市
+ */
+@property (strong, nonatomic) NSString *locationCityName;
+
+/**
+ 百度定位到的城市的ID
+*/
+@property (strong, nonatomic) NSString *locationCityID;
+
+/**
+ 城市列表选择的城市名
+ */
+@property (strong, nonatomic) NSString *cityName;
+
+/**
+ 城市列表选择的城市ID
+ */
+@property (strong, nonatomic) NSString *cityId;
+
+/**
+ 是否是钟点房
+ */
+@property (assign, nonatomic) BOOL isHourRoom;
+
+/*******************************预订酒店部分*************************************/
+
+/**
+ 酒店列表的百度地图坐标
+ */
+@property (strong, nonatomic)NSArray *hotelLocationList;
+
+/**
+ 入住时间
+ */
+@property (assign, nonatomic) NSTimeInterval stayDate;
+
+/**
+ 离开时间
+ */
+@property (assign, nonatomic) NSTimeInterval leaveDate;
+
+/**
+ 钟点房入住时间
+ */
+@property (assign, nonatomic) NSTimeInterval HourRoomStayDate;
+
+/**
+ 入住天数
+ */
+@property (assign, nonatomic) NSInteger days;
+
+/**
+ 入住间数
+ */
+@property (assign, nonatomic) NSInteger roomCount;
+
+/**
+ 是否展示日历界面提示的状态
+ */
+@property (assign, nonatomic) BOOL isShowcalendarTips;
+
+/**
+ 筛选条件-选择的品牌
+ */
+@property (strong, nonatomic) NSString *brand;
+
+/**
+ 筛选条件-选择的排序类型
+ */
+@property (strong, nonatomic) NSString *sortType;
+
+/**
+ 筛选条件-选择的筛选里面的城市区域
+ */
+@property (strong, nonatomic) BDDataForSingleSiftConditionObject *selectAreaObject;
+
+/**
+ 筛选条件-选择的筛选里面的活动
+ */
+@property (strong, nonatomic) BDDataForSingleSiftConditionObject *selectActivityObject;
+
+/**
+ 选中的酒店编码
+ */
+@property (strong, nonatomic) NSString *hotelCode;
+
+/**
+ 选中的酒店信息
+ */
+@property (strong, nonatomic) BDDataForSingleHotelObject *selectHotelObject;
+
+/**
+ 选中的房型信息
+ */
+@property (strong, nonatomic) BDDataForSingleHotelRoomInfoObject *selectHotelRoomInfoObject;
+
+/**
+ 选中的房型下的选中的活动信息
+ */
+@property (strong, nonatomic) BDDataForSingleActivityPriceObject *selectActivityPriceObject;
+
+/**
+ 选中日期下的每日房价
+ */
+@property (strong, nonatomic)BDDataForMemberPriceObject *selectDateMemberPriceObject;
+
+/**
+ 选中的要使用的优惠券
+ */
+@property (strong, nonatomic) BDDataForSingleCouponObject *selectSingleCouponObject;
+
+/**
+ 平台订单
+ */
+@property (strong, nonatomic) NSString *orderNo;
+
+@property (strong, nonatomic) BDDataForSinglePayWayObject *selectPayWayModel;
+
+/**
+ 选择房型间夜的总价
+ */
+@property (assign, nonatomic)CGFloat totalRoomPrice;
+
+/**
+ 推荐商品
+ */
+@property (strong, nonatomic)BDDataForRecommendGoodsObject *recommendGoodsObject;
+
+/**
+ 组合包价商品
+ */
+@property (strong, nonatomic)BDDataForRecommendGoodsObject *combinationGoodsObject;
+/**
+ 组合包价商品的总价
+ */
+@property (assign, nonatomic)CGFloat totalCombinationGoodPrice;
+
+/**
+ 组合报价优惠金额
+ */
+@property (assign, nonatomic)CGFloat combinationDiscountPrice;
+
+/**
+ 选择的商品
+ */
+@property (strong, nonatomic)NSMutableArray *selectGoodsArray;
+
+/**
+ 选购商品的总价
+ */
+@property (assign, nonatomic)CGFloat totalGoodPrice;
+
+
+#pragma mark ------------------- Public -------------------
+@property (strong, nonatomic) NSString *token;
+
+#pragma mark ------------------- Method -------------------
+/**
+ 单例
+ @return 返回自身
+ */
++ (id)shareInstance;
+
+/**
+ 配置初始化
+ */
+- (void)initialize;
+
+/**
+ 载入用户账号（手机号／邮箱／卡号）
+ 
+ @param username 用户账号
+ */
+- (void)saveUsername:(NSString *)username;
+
+/**
+ 载入密码
+ 
+ @param password 密码
+ */
+- (void)savePassword:(NSString *)password;
+
+/**
+ 保存是否是商旅卡
+ 
+ @param isTravel 是否是商旅卡
+ */
+- (void)saveIsTravel:(BOOL)isTravel;
+
+/**
+ 删除登录的账号
+ */
+- (void)removeUserName;
+
+/**
+ 删除登录用户的密码
+ */
+- (void)removeUserPassword;
+
+/**
+ 选择城市名
+ @param cityName 城市名
+ */
+- (void)saveCityName:(NSString *)cityName;
+
+/**
+ 选择城市id
+ @param cityId 城市id
+ */
+- (void)saveCityId:(NSString *)cityId;
+
+/**
+ *  存储是否要显示日历提示界面的状态值
+ *
+ *  @param state 状态bool值
+ */
+- (void)saveIsShowcalendarTips:(BOOL)state;
+
+/**
+ *  获取是否要显示日历提示界面的状态
+ *
+ *  @return bool值
+ */
+- (BOOL)isShowcalendarTips;
+
+/**
+ @method
+ @abstract 保存第三方免责声明的状态
+ @param state 第三方免责声明的状态
+ */
+- (void)saveThirdReliefInfoState:(BOOL)state withKeyStr:(NSString *)keyStr;
+
+/**
+ @method
+ @abstract 获取第三方免责声明的状态
+ @return 返回第三方免责声明的状态
+ */
+- (BOOL)getThirdReliefInfoStateWithKey:(NSString *)keyStr;
+
+@end

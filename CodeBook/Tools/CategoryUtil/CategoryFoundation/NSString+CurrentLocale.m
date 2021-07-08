@@ -1,0 +1,323 @@
+//
+//  NSString+CurrentLocale.m
+//  BD
+//
+//  Created by Podinn on 2017/9/11.
+//  Copyright © 2017年 杭州睿创科技有限公司. All rights reserved.
+//
+
+#import "NSString+CurrentLocale.h"
+#import "sys/sysctl.h"
+#include <net/if.h>
+#include <net/if_dl.h>
+#import <CoreTelephony/CTCarrier.h>
+#import <CoreTelephony/CTTelephonyNetworkInfo.h>
+
+@implementation NSString (CurrentLocale)
+
+/********************* system *************************/
+/*!
+ @method
+ @abstract 获取设备名称
+ @return 返回设备名称
+ */
++ (NSString *)deviceName {
+    return [[UIDevice currentDevice] systemName];
+}
+
+/*!
+ @method
+ @abstract 获取设备id
+ @return 返回设备id
+ */
++ (NSString *)deviceOpenUdid {
+    if (IsIOS9) {
+        NSDictionary *myDictionary = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"OpenUDID"];
+        return [NSString stringWithFormat:@"%@",[myDictionary valueForKey:@"OpenUDID"]];
+    }
+    else {
+        return nil;
+    }
+}
+
++ (NSString *)macAddress {
+    int                 mib[6];
+    size_t              len;
+    char                *buf;
+    unsigned char       *ptr;
+    struct if_msghdr    *ifm;
+    struct sockaddr_dl  *sdl;
+    
+    mib[0] = CTL_NET;
+    mib[1] = AF_ROUTE;
+    mib[2] = 0;
+    mib[3] = AF_LINK;
+    mib[4] = NET_RT_IFLIST;
+    
+    if ((mib[5] = if_nametoindex("en0")) == 0) {
+        printf("Error: if_nametoindex error/n");
+        return NULL;
+    }
+    
+    if (sysctl(mib, 6, NULL, &len, NULL, 0) < 0) {
+        printf("Error: sysctl, take 1/n");
+        return NULL;
+    }
+    
+    if ((buf = malloc(len)) == NULL) {
+        printf("Could not allocate memory. error!/n");
+        return NULL;
+    }
+    
+    if (sysctl(mib, 6, buf, &len, NULL, 0) < 0) {
+        printf("Error: sysctl, take 2");
+        return NULL;
+    }
+    
+    ifm = (struct if_msghdr *)buf;
+    sdl = (struct sockaddr_dl *)(ifm + 1);
+    ptr = (unsigned char *)LLADDR(sdl);
+    NSString *outstring = [NSString stringWithFormat:@"%02x:%02x:%02x:%02x:%02x:%02x", *ptr, *(ptr+1), *(ptr+2), *(ptr+3), *(ptr+4), *(ptr+5)];
+    
+    free(buf);
+    
+    return [outstring uppercaseString];
+}
+
+/*!
+ @method
+ @abstract 获取手机系统版本
+ @return 返回手机系统版本
+ */
++ (NSString *)systemVersion {
+    return [[UIDevice currentDevice] systemVersion];
+}
+
+/*!
+ @method
+ @abstract 获取手机型号
+ @return 返回手机型号
+ */
++ (NSString *)phoneModel {
+    return [[UIDevice currentDevice] model];
+}
+
+/*!
+ @method
+ @abstract 获取当前所在地
+ @return 返回当前所在地
+ */
++ (NSString *)currentLocale {
+    NSString *identifier = [[NSLocale currentLocale] localeIdentifier];
+    NSString *displayName = [[NSLocale currentLocale] displayNameForKey:NSLocaleIdentifier value:identifier];
+    return displayName;
+}
+
+/*!
+ @method
+ @abstract 获取当前设备时间
+ @return 返回当前设备时间
+ */
+//+ (NSString *)currentSystemDate {
+//    return @"";
+//}
+
+///*!
+// @method
+// @abstract 获取手机详细型号
+// @return 返回手机详细型号
+// */
+//+ (NSString *)phoneDetailModel
+//{
+//    size_t size;
+//    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+//    char *machine = (char *)malloc(size);
+//    sysctlbyname("hw.machine", machine, &size, NULL, 0);
+//    NSString *platform = [NSString stringWithCString:machine encoding:NSUTF8StringEncoding];
+//    free(machine);
+//    
+//    if ([platform isEqualToString:@"iPhone1,1"]) return @"iPhone 2G (A1203)";
+//    if ([platform isEqualToString:@"iPhone1,2"]) return @"iPhone 3G (A1241/A1324)";
+//    if ([platform isEqualToString:@"iPhone2,1"]) return @"iPhone 3GS (A1303/A1325)";
+//    if ([platform isEqualToString:@"iPhone3,1"]) return @"iPhone 4 (A1332)";
+//    if ([platform isEqualToString:@"iPhone3,2"]) return @"iPhone 4 (A1332)";
+//    if ([platform isEqualToString:@"iPhone3,3"]) return @"iPhone 4 (A1349)";
+//    if ([platform isEqualToString:@"iPhone4,1"]) return @"iPhone 4S (A1387/A1431)";
+//    if ([platform isEqualToString:@"iPhone5,1"]) return @"iPhone 5 (A1428)";
+//    if ([platform isEqualToString:@"iPhone5,2"]) return @"iPhone 5 (A1429/A1442)";
+//    if ([platform isEqualToString:@"iPhone5,3"]) return @"iPhone 5c (A1456/A1532)";
+//    if ([platform isEqualToString:@"iPhone5,4"]) return @"iPhone 5c (A1507/A1516/A1526/A1529)";
+//    if ([platform isEqualToString:@"iPhone6,1"]) return @"iPhone 5s (A1453/A1533)";
+//    if ([platform isEqualToString:@"iPhone6,2"]) return @"iPhone 5s (A1457/A1518/A1528/A1530)";
+//    if ([platform isEqualToString:@"iPhone7,1"]) return @"iPhone 6 Plus (A1522/A1524)";
+//    if ([platform isEqualToString:@"iPhone7,2"]) return @"iPhone 6 (A1549/A1586)";
+//    
+//    if ([platform isEqualToString:@"iPod1,1"]) return @"iPod Touch 1G (A1213)";
+//    if ([platform isEqualToString:@"iPod2,1"]) return @"iPod Touch 2G (A1288)";
+//    if ([platform isEqualToString:@"iPod3,1"]) return @"iPod Touch 3G (A1318)";
+//    if ([platform isEqualToString:@"iPod4,1"]) return @"iPod Touch 4G (A1367)";
+//    if ([platform isEqualToString:@"iPod5,1"]) return @"iPod Touch 5G (A1421/A1509)";
+//    if ([platform isEqualToString:@"iPad1,1"]) return @"iPad 1G (A1219/A1337)";
+//    if ([platform isEqualToString:@"iPad2,1"]) return @"iPad 2 (A1395)";
+//    if ([platform isEqualToString:@"iPad2,2"]) return @"iPad 2 (A1396)";
+//    if ([platform isEqualToString:@"iPad2,3"]) return @"iPad 2 (A1397)";
+//    if ([platform isEqualToString:@"iPad2,4"]) return @"iPad 2 (A1395+New Chip)";
+//    if ([platform isEqualToString:@"iPad2,5"]) return @"iPad Mini 1G (A1432)";
+//    if ([platform isEqualToString:@"iPad2,6"]) return @"iPad Mini 1G (A1454)";
+//    if ([platform isEqualToString:@"iPad2,7"]) return @"iPad Mini 1G (A1455)";
+//    if ([platform isEqualToString:@"iPad3,1"]) return @"iPad 3 (A1416)";
+//    if ([platform isEqualToString:@"iPad3,2"]) return @"iPad 3 (A1403)";
+//    if ([platform isEqualToString:@"iPad3,3"]) return @"iPad 3 (A1430)";
+//    if ([platform isEqualToString:@"iPad3,4"]) return @"iPad 4 (A1458)";
+//    if ([platform isEqualToString:@"iPad3,5"]) return @"iPad 4 (A1459)";
+//    if ([platform isEqualToString:@"iPad3,6"]) return @"iPad 4 (A1460)";
+//    if ([platform isEqualToString:@"iPad4,1"]) return @"iPad Air (A1474)";
+//    if ([platform isEqualToString:@"iPad4,2"]) return @"iPad Air (A1475)";
+//    if ([platform isEqualToString:@"iPad4,3"]) return @"iPad Air (A1476)";
+//    if ([platform isEqualToString:@"iPad4,4"]) return @"iPad Mini 2G (A1489)";
+//    if ([platform isEqualToString:@"iPad4,5"]) return @"iPad Mini 2G (A1490)";
+//    if ([platform isEqualToString:@"iPad4,6"]) return @"iPad Mini 2G (A1491)";
+//    
+//    return platform;
+//}
+
+/*!
+ @method
+ @abstract 获取手机详细型号
+ @return 返回手机详细型号
+ */
++ (NSString *)phoneDetailModel {
+    size_t size;
+    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+    char *machine = (char *)malloc(size);
+    sysctlbyname("hw.machine", machine, &size, NULL, 0);
+    NSString *platform = [NSString stringWithCString:machine encoding:NSUTF8StringEncoding];
+    free(machine);
+    
+    if ([platform isEqualToString:@"iPhone1,1"]) return @"iPhone 2G";
+    if ([platform isEqualToString:@"iPhone1,2"]) return @"iPhone 3G";
+    if ([platform isEqualToString:@"iPhone2,1"]) return @"iPhone 3GS";
+    if ([platform isEqualToString:@"iPhone3,2"] || [platform isEqualToString:@"iPhone3,1"] || [platform isEqualToString:@"iPhone3,3"])  return @"iPhone 4";
+    if ([platform isEqualToString:@"iPhone4,1"]) return @"iPhone 4S";
+    if ([platform isEqualToString:@"iPhone5,1"] || [platform isEqualToString:@"iPhone5,2"] || [platform isEqualToString:@"iPhone5,3"] || [platform isEqualToString:@"iPhone5,4"]) return @"iPhone 5";
+    if ([platform isEqualToString:@"iPhone6,1"] || [platform isEqualToString:@"iPhone6,2"]) return @"iPhone 5s";
+    
+
+    if ([platform isEqualToString:@"iPhone7,1"]) return @"iPhone 6 Plus";
+    if ([platform isEqualToString:@"iPhone7,2"]) return @"iPhone 6";
+    
+    if ([platform isEqualToString:@"iPod1,1"]) return @"iPod Touch 1G";
+    if ([platform isEqualToString:@"iPod2,1"]) return @"iPod Touch 2G";
+    if ([platform isEqualToString:@"iPod3,1"]) return @"iPod Touch 3G";
+    if ([platform isEqualToString:@"iPod4,1"]) return @"iPod Touch 4G";
+    if ([platform isEqualToString:@"iPod5,1"]) return @"iPod Touch 5G";
+    if ([platform isEqualToString:@"iPad1,1"]) return @"iPad 1G";
+    if ([platform isEqualToString:@"iPad2,1"]) return @"iPad 2";
+    if ([platform isEqualToString:@"iPad2,2"]) return @"iPad 2";
+    if ([platform isEqualToString:@"iPad2,3"]) return @"iPad 2";
+    if ([platform isEqualToString:@"iPad2,4"]) return @"iPad 2";
+    if ([platform isEqualToString:@"iPad2,5"]) return @"iPad Mini 1G";
+    if ([platform isEqualToString:@"iPad2,6"]) return @"iPad Mini 1G ";
+    if ([platform isEqualToString:@"iPad2,7"]) return @"iPad Mini 1G";
+    if ([platform isEqualToString:@"iPad3,1"]) return @"iPad 3";
+    if ([platform isEqualToString:@"iPad3,2"]) return @"iPad 3";
+    if ([platform isEqualToString:@"iPad3,3"]) return @"iPad 3";
+    if ([platform isEqualToString:@"iPad3,4"]) return @"iPad 4";
+    if ([platform isEqualToString:@"iPad3,5"]) return @"iPad 4";
+    if ([platform isEqualToString:@"iPad3,6"]) return @"iPad 4";
+    if ([platform isEqualToString:@"iPad4,1"]) return @"iPad Air";
+    if ([platform isEqualToString:@"iPad4,2"]) return @"iPad Air";
+    if ([platform isEqualToString:@"iPad4,3"]) return @"iPad Air";
+    if ([platform isEqualToString:@"iPad4,4"]) return @"iPad Mini 2G";
+    if ([platform isEqualToString:@"iPad4,5"]) return @"iPad Mini 2G";
+    if ([platform isEqualToString:@"iPad4,6"]) return @"iPad Mini 2G";
+    
+    return platform;
+}
+
+/**
+ *  获取设备的udid
+ *
+ *  @return 设备的udid
+ */
++ (NSString *)getDeviceUDID
+{
+    NSUserDefaults *defaults0 = [NSUserDefaults standardUserDefaults];
+    NSDictionary *myDictionary = [defaults0 dictionaryForKey:@"OpenUDID"];
+   NSString *deviceId = [NSString stringWithFormat:@"%@",[myDictionary valueForKey:@"OpenUDID"]];
+    return deviceId;
+}
+
+/**
+ *  获取设备的运行商
+ *
+ *  @return 设备的运行商
+ */
++ (NSString *)getDeviceCarrierOperator
+{
+    CTTelephonyNetworkInfo *info = [[CTTelephonyNetworkInfo alloc] init];
+    CTCarrier *carrier = [info subscriberCellularProvider];
+    return [carrier carrierName];
+}
+
+/**
+ *  获取设备的网络状态
+ *
+ *  @return NETWORK_TYPE
+ */
++ (NETWORK_TYPE)getNetworkTypeFromStatusBar
+{
+    UIApplication *app = [UIApplication sharedApplication];
+    NSArray *subviews = [[[app valueForKey:@"statusBar"] valueForKey:@"foregroundView"] subviews];
+    NSNumber *dataNetworkItemView = nil;
+    for (id subview in subviews)
+    {
+        if([subview isKindOfClass:[NSClassFromString(@"UIStatusBarDataNetworkItemView") class]])
+        {
+            dataNetworkItemView = subview;
+            break;
+        }
+    }
+    NETWORK_TYPE nettype = NETWORK_TYPE_NONE;
+    NSNumber *num = [dataNetworkItemView valueForKey:@"dataNetworkType"];
+    nettype = [num intValue];
+    return nettype;
+}
+
+/********************* app *************************/
+/*!
+ @method
+ @abstract 获取当前应用名
+ @return 返回当前应用名
+ */
++ (NSString *)appCurrentName {
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    NSString *appCurName = [infoDictionary objectForKey:@"CFBundleDisplayName"];
+    return appCurName;
+}
+
+/*!
+ @method
+ @abstract 获取当前版本号
+ @return 返回当前版本号 (1.0.0)   返回100
+ */
++ (NSString *)appCurrentVersion {
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    NSString *appCurVersion = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+    appCurVersion = [appCurVersion stringByReplacingOccurrencesOfString:@"." withString:@""];
+    
+    return appCurVersion;
+}
+
+/*!
+ @method
+ @abstract 获取版本号
+ @return 返回版本号
+ */
++ (NSString *)appVersionNum {
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    NSString *appCurVersionNum = [infoDictionary objectForKey:@"CFBundleVersion"];
+    return appCurVersionNum;
+}
+
+@end

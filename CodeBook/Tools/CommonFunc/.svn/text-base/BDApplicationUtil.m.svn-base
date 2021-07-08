@@ -1,0 +1,617 @@
+//
+//  BDApplicationUtil.m
+//  BD
+//
+//  Created by Podinn on 2017/9/11.
+//  Copyright © 2017年 杭州睿创科技有限公司. All rights reserved.
+//
+
+#import "BDApplicationUtil.h"
+#import "NSString+Check.h"
+#import "NSDate+Calendar.h"
+#import "PublicTools.h"
+
+#define INTERVAL_ONE_YEAR 365*24*60*60
+
+@implementation BDApplicationUtil
+
++ (NSString *)getImageNameFromTypeId:(NSString *)typeId {
+    
+    if (typeId)
+    {
+        return [NSString stringWithFormat:@"img_weather_b%@", typeId];
+    }
+    return nil;
+}
+
++ (NSString *)getTemperatureRangeByLowTemperature:(NSString *)lowTemperature highTemperature:(NSString *)highTemperature {
+    if (lowTemperature && highTemperature) {
+        return [NSString stringWithFormat:@"%@°C ~ %@°C", lowTemperature, highTemperature];
+    }
+    return nil;
+}
+
+/*!
+ @method
+ @abstract 经纬度数据类型转换
+ @param string 经纬度字符串
+ @return 经度
+ */
++ (double)getLongitudeByString:(NSString *)string {
+    NSArray *array = [string componentsSeparatedByString:@","];
+    if (array.count > 0) {
+        return [array[0] doubleValue];
+    }
+    return 0;
+}
+
+/*!
+ @method
+ @abstract 经纬度数据类型转换
+ @param string 经纬度字符串
+ @return 纬度
+ */
++ (double)getLatitudeByString:(NSString *)string {
+    NSArray *array = [string componentsSeparatedByString:@","];
+    if (array.count > 1) {
+        return [array[1] doubleValue];
+    }
+    return 0;
+}
+
+/**
+ *  把经纬度转化为经纬度的字符串
+ *
+ *  @param coordinate2D 经纬度
+ *
+ *  @return 经纬度的字符串
+ */
++ (NSString *)getAddressMapStringByLocationCoordinate2D:(CLLocationCoordinate2D)coordinate2D
+{
+    return [NSString stringWithFormat:@"%lf,%lf", coordinate2D.longitude,coordinate2D.latitude];
+}
+
+/**
+ *  把经纬度的字符串转化为坐标
+ *
+ *  @param coordStr 经纬度的字符串
+ *
+ *  @return  经纬度
+ */
++ (CLLocationCoordinate2D)getLocationCoordinate2DWithCoordinateStr:(NSString *)coordStr
+{
+    if (coordStr)
+    {
+        CLLocationCoordinate2D pt = (CLLocationCoordinate2D){[self getLatitudeByString:coordStr], [self getLongitudeByString:coordStr]};
+        return pt;
+    }
+    return  (CLLocationCoordinate2D){0, 0};
+}
+
+/**
+ *  计算两地的距离
+ *
+ *  @param originCoord 出发的坐标
+ *  @param destCoord   目的地坐标
+ *
+ *  @return 距离
+ */
++ (NSString *)calculateDistanceWithOriginCoordinate:(CLLocationCoordinate2D)originCoord destinationCoordinate:(CLLocationCoordinate2D)destCoord
+{
+    const CGFloat radius = 6378.137;
+    CGFloat radLat1 = [self rad:originCoord.latitude];
+    CGFloat radLat2 = [self rad:destCoord.latitude];
+    CGFloat a = radLat1 - radLat2;
+    CGFloat b = [self rad:originCoord.longitude] - [self rad:destCoord.longitude];
+    CGFloat s = 2 * asin(sqrt(pow(sin(a/2),2)+cos(radLat1)*cos(radLat2)*pow(sin(b/2),2)));
+    s = s*radius;
+    s = round(s*10000)/10000;
+    
+    if (s < 1)
+    {
+        return [NSString stringWithFormat:@"%.fm",s * 1000];
+    }
+    else
+    {
+        return [NSString stringWithFormat:@"%.1fkm",s];
+    }
+}
+
++ (CGFloat)rad:(CGFloat)ap
+{
+    return ap * 3.1415926535898/180.0;
+}
+
+/**
+ *  计算两个地方的距离
+ *
+ *  @param lng1 第一个地方的经度
+ *  @param lat1 第一个地方的纬度
+ *  @param lng2 第一个地方的经度
+ *  @param lat2 第一个地方的纬度
+ *
+ *  @return 距离 千米
+ */
++ (int)getDistance:(double)lng1 lng:(double)lat1 la2:(double)lng2 lng2:(double)lat2
+{
+    CLLocation* curLocation = [[CLLocation alloc] initWithLatitude:lng1 longitude:lat1];
+    CLLocation* otherLocation = [[CLLocation alloc] initWithLatitude:lng2 longitude:lat2];
+    double dis  = [curLocation distanceFromLocation:otherLocation];
+    int distance;
+    distance = [[NSString stringWithFormat:@"%f",dis/1000] intValue] + 1;
+    return distance;
+}
+
++ (BOOL)isEmptyString:(NSString *)string
+{
+    if (string == nil || string == (NSString *)[NSNull null])
+    {
+        return YES;
+    }
+    else if([string length] == 0)
+    {
+        return YES;
+    }
+    else if ([string isEqualToString:@"undefined"]) {
+        return YES;
+    }
+    // 去除字符串前后的空格
+    else if([[string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] length] == 0)
+    {
+        return YES;
+    }
+    return NO;
+}
+
+/**
+ * 计算文本自适应
+ *
+ *  @param string 要计算的字符串
+ *  @param size   size的范围
+ *  @param font   文本字体大小
+ *
+ *  @return CGSize
+ */
++ (CGSize)getStringSizeWithString:(NSString *)string size:(CGSize)size font:(UIFont *)font
+{
+    if ([string respondsToSelector:@selector(boundingRectWithSize:options:attributes:context:)]) {
+        NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:string attributes:@{NSFontAttributeName: font}];
+        CGRect rect = [attributedText boundingRectWithSize:(CGSize)size options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+        //        height = ceilf(rect.size.height);
+        return rect.size;
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        return [string sizeWithFont:font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
+#pragma clang diagnostic pop
+    }
+    return size;
+}
+
+/**
+ *  获取优惠券的图片
+ *
+ *
+ *  @return 返回对应的优惠券额
+ */
++ (NSString *)getCouponCashImageString:(NSString *)string
+{
+    NSString *imgStr = nil;
+    switch ([string intValue])
+    {
+        case 10:
+            imgStr = @"img_coupon_10";
+            break;
+        case 20:
+            imgStr = @"img_coupon_20";
+            break;
+        case 30:
+            imgStr = @"img_coupon_30";
+            break;
+        case 40:
+            imgStr = @"img_coupon_40";
+            break;
+        case 50:
+            imgStr = @"img_coupon_50";
+            break;
+        default:
+            imgStr = @"img_coupon_10";
+            break;
+    }
+    
+    return imgStr;
+}
+
+/**
+ *  获取优惠券的有效期限
+ *
+ *
+ *  @return 返回对应的有效期限
+ */
++ (NSString *)getCouponCashEffectTimeStringWithStartTime:(NSString *)startTime endTime:(NSString *)endTime
+{
+    if (startTime.length > 9 && endTime.length > 9) {
+        NSString *timeStr = [NSString stringWithFormat:@"%@ 至 %@", [startTime substringToIndex:10], [endTime substringToIndex:10]];
+        return timeStr;
+    }
+    return @"";
+}
+
+/**
+ *  判断字符串中是否含有某个前缀
+ *
+ *  @param string    原始的字符串
+ *  @param prefixStr 前缀字符串
+ *
+ *  @return bool
+ */
++ (BOOL)originalString:(NSString *)string ifHasPrefixString:(NSString *)prefixStr
+{
+    if (string && prefixStr) {
+        if ([string hasPrefix:[prefixStr uppercaseString]] || [string hasPrefix:[prefixStr lowercaseString]])
+        {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
+
+/*!
+ @method
+ @abstract 判断字符串前缀是否是"OK"
+ @param string 比较字符串
+ @return 比较结果
+ */
++ (BOOL)getRealResultByString:(NSString *)string {
+    return [string comparePrefixStringForOK];
+}
+
+/**
+ *  获取年月日的字符串
+ *
+ *  @param string string
+ *
+ *  @return string
+ */
++ (NSString *)getDateStrFromDateString:(NSString *)string
+{
+    return [string substringToIndex:10];
+}
+
++ (NSString*)calculateWeekNum:(NSString*)dateStr
+{
+    NSInteger weekNum = NSNotFound;
+    NSArray *separateStrArray = [[NSArray alloc] initWithArray:[dateStr componentsSeparatedByString:@"-"]];
+    if (separateStrArray.count > 1) {
+        NSString *year = [separateStrArray objectAtIndex:0];
+        
+        NSString *month = [separateStrArray objectAtIndex:1];
+        NSString *idate = [separateStrArray objectAtIndex:2];
+        
+        //防止字符串里面有空格，先全部转换成整数，再求余或者mod
+        NSInteger Year = [year integerValue];
+        NSInteger Month = [month integerValue];
+        NSInteger Day = [idate integerValue];
+        
+        //////NSLog(@"%d   %d   %d",Year,Month,Day);
+        
+        //对一月、二月特殊处理，当作前一年的13、14月
+        if (Month == 1 || Month == 2) {
+            Month += 12;
+            Year--;
+        }
+        NSInteger CYear = Year/100;
+        NSInteger Byear = Year%100;
+        
+        //////NSLog(@"%d   %d",CYear,Byear);
+        
+        weekNum = (CYear/4) - 2*CYear + Byear + (Byear/4) + (13 * (Month + 1)/5) + Day - 1;
+        
+        //////NSLog(@"%d",weekNum);
+        if (weekNum <= 0)
+        {
+            weekNum = weekNum + 70;
+        }
+    }
+    
+    weekNum = weekNum % 7;
+    
+    NSString *hanziNum = @"";
+    
+    switch (weekNum) {
+        case 0:
+            hanziNum = @"周日";
+            break;
+        case 1:
+            hanziNum = @"周一";
+            break;
+        case 2:
+            hanziNum = @"周二";
+            break;
+        case 3:
+            hanziNum = @"周三";
+            break;
+        case 4:
+            hanziNum = @"周四";
+            break;
+        case 5:
+            hanziNum = @"周五";
+            break;
+        case 6:
+            hanziNum = @"周六";
+            break;
+        default:
+            break;
+    }
+    
+    return hanziNum;
+}
+
+//设置星期几
++ (NSString*)getWeekdayLabel:(NSString*)_str
+{
+    NSString *_weekday = @"";
+    
+    if ([_str isEqualToString:@"Monday"]||[_str isEqualToString:@"星期一"]) {
+        _weekday=@"周一";
+    }
+    
+    if ([_str isEqualToString:@"Tuesday"]||[_str isEqualToString:@"星期二"]) {
+        _weekday=@"周二";
+    }
+    
+    if ([_str isEqualToString:@"Wednesday"]||[_str isEqualToString:@"星期三"]) {
+        _weekday=@"周三";
+    }
+    
+    if ([_str isEqualToString:@"Thursday"]||[_str isEqualToString:@"星期四"]) {
+        _weekday=@"周四";
+    }
+    
+    if ([_str isEqualToString:@"Friday"]||[_str isEqualToString:@"星期五"]) {
+        _weekday=@"周五";
+    }
+    
+    if ([_str isEqualToString:@"Saturday"]||[_str isEqualToString:@"星期六"]) {
+        _weekday=@"周六";
+    }
+    
+    if ([_str isEqualToString:@"Sunday"]||[_str isEqualToString:@"星期日"]) {
+        _weekday=@"周日";
+    }
+    return _weekday;
+}
+
+//通过数字获取对应的星期
++ (NSString*)getWeekdayLabelByDay:(NSInteger)day
+{
+    NSString *_weekday = @"";
+    
+    if (day == 1) {
+        _weekday = @"星期一";
+    }else if (day == 2) {
+        _weekday = @"星期二";
+    }else if (day == 3) {
+        _weekday = @"星期三";
+    }else if (day == 4) {
+        _weekday = @"星期四";
+    }else if (day == 5) {
+        _weekday = @"星期五";
+    }else if (day == 6) {
+        _weekday = @"星期六";
+    }else if (day == 0) {
+        _weekday = @"星期日";
+    }
+    
+    return _weekday;
+}
+
+/**
+ *  计算两个日期之前的天数
+ *
+ *  @param fromDate  起始日期
+ *  @param toDate 借宿日期
+ *
+ *  @return 天数
+ */
++ (NSInteger)calculateDaysWithFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate
+{
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    unsigned int unitFlags = NSCalendarUnitDay;
+    NSDateComponents *comps = [calendar components:unitFlags fromDate:fromDate  toDate:toDate  options:0];
+    NSInteger days = [comps day];
+    return days;
+}
+
+/*!
+ @method
+ @abstract 根据图片链接地址获取广告详情跳转选项
+ @param imageUrl 图片链接地址
+ @return 返回广告详情跳转选项
+ */
++ (AdSelectedType)getAdSelectedTypeByImageUrl:(NSString *)imageUrl {
+    if (imageUrl) {
+        if ([imageUrl hasPrefix:@"F:"]) {
+            return PromotionDetailType;
+        }
+        else if ([imageUrl hasPrefix:@"H:"]) {
+            return HotelDatailType;
+        }
+        else if ([imageUrl hasPrefix:@"S:"]) {
+            return HotelSearchType;
+        }
+        else if ([imageUrl hasPrefix:@"Y:"]) {
+            return NightSearchType;
+        }
+        else if ([imageUrl hasPrefix:@"V:"]) {
+            return SomeonePageType;
+        }
+        else if ([imageUrl hasPrefix:@"Z:"]) {
+            return DetailByLoginType;
+        }
+    }
+    return AdDetailType;
+}
+
+/**
+ *  替换字符串
+ *
+ *  @param string 要处理的字符串
+ *
+ *  @return NSString
+ */
++ (NSString	*) escapeBracket:(NSString *)string
+{
+    NSMutableString *resultString = [[NSMutableString alloc] initWithFormat:@"%@",string];
+    
+    NSRange range;
+    range.location = 0;
+    range.length = [resultString length];
+    
+    [resultString replaceOccurrencesOfString:@">" withString:@"&gt;" options:NSCaseInsensitiveSearch range:range];
+    
+    range.location = 0;
+    range.length = [resultString length];
+    [resultString replaceOccurrencesOfString:@"<" withString:@"&lt;" options:NSCaseInsensitiveSearch range:range];
+    
+    return resultString;
+}
+
+/*
+ http开头是站外一个url地址，点击banner不跳出APP，在APP里内嵌浏览器打开（实为布丁提供的html5页面）
+ F:ID,到客户端促销页详情，编号为ID，识别为F:开头
+ H:ID,到客户端酒店详细页，酒店编号为ID，识别为H:开头
+ S:ID到客户端酒店搜索列表，ID为城市编号，识别为S:开头
+ Y:ID到客户端夜销搜索列表，ID为城市编号，识别为Y:开头
+ V:view的名称，到客户端某个指定页，识别为V:开头
+ Z:ID,等同http链接，转页面前前需要会员登录，并且调用接口:GetLoginMemID的数据作为querystring链接地ID的地址,querystring字段名为s
+ */
++ (CGSize)getSizeByString:(NSString *)string width:(CGFloat)width font:(UIFont *)font {
+    CGSize size = CGSizeZero;
+    
+    if ([string respondsToSelector:@selector(boundingRectWithSize:options:attributes:context:)]) {
+        NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:string attributes:@{NSFontAttributeName: font}];
+        CGRect rect = [attributedText boundingRectWithSize:(CGSize){width, CGFLOAT_MAX} options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+        //        height = ceilf(rect.size.height);
+        return rect.size;
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        return [string sizeWithFont:font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
+#pragma clang diagnostic pop
+    }
+    return size;
+}
+
++ (CGFloat)getHeightByString:(NSString *)string width:(CGFloat)width font:(UIFont *)font {
+    return [BDApplicationUtil getSizeByString:string width:width font:font].height;
+}
+
++ (NSString *)getContentByString:(NSString *)string dictionary:(NSDictionary *)dictionary {
+    if (string) {
+        NSMutableString *mutableString = [NSMutableString string];
+        NSArray *keyArray = [string componentsSeparatedByString:@","];
+        if (keyArray) {
+            for (int i = 0; i < keyArray.count; i++) {
+                NSString *key = keyArray[i];
+                if ([dictionary.allKeys containsObject:key]) {
+                    NSString *value = [dictionary objectForKey:key];
+                    [mutableString appendString:value];
+                    if (i != keyArray.count - 1) {
+                        [mutableString appendString:@","];
+                    }
+                }
+            }
+        }
+        return mutableString;
+    }
+    return nil;
+}
+
++ (NSString *)getServerContentByString:(NSString *)string {
+    NSDictionary *serviceDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:@"大堂上网机",@"'1'",@"自助吹风机",@"'2'",@"skype电话",@"'3'",@"支持银联",@"'4'",@"微波炉",@"'5'",@"免费停车位",@"'6'",@"行李寄存服务",@"'7'",@"消毒柜",@"'8'",@"贵重物品保险箱",@"'9'",@"免费报刊借阅",@"'10'",@"大堂自助购物",@"'11'",@"两岸咖啡厅送餐服务",@"'12'",@"自助洗衣服务",@"'13'", nil];
+    return [BDApplicationUtil getContentByString:string dictionary:serviceDictionary];
+}
+
++ (NSString *)getRoomContentByString:(NSString *)string {
+    NSDictionary *facilitiesDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:@"免费宽带",@"'1'",@"电话",@"'2'",@"有线电视",@"'3'",@"独立洗手间",@"'4'",@"独立分体空调",@"'5'",@"24小时热水供应",@"'6'",@"电水壶",@"'7'",@"电子门锁",@"'8'",@"电脑",@"'9'",@"华数点播电视",@"'10'",@"全套一次性消耗品",@"'16'",@"卫星电视",@"'17'", nil];
+    return [BDApplicationUtil getContentByString:string dictionary:facilitiesDictionary];
+}
+
+/*!
+ @method
+ @abstract 替换网络转义字符
+ @param string 网络数据
+ @return 返回替换后的数据
+ */
++ (NSString *)getReplacingOccurrencesByString:(NSString *)string {
+    if (string) {
+        string = [string stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
+        string = [string stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
+        string = [string stringByReplacingOccurrencesOfString:@"&#xD;" withString:@"\n"];
+        string = [string stringByReplacingOccurrencesOfString:@"br/" withString:@"\n"];
+        
+        //string = [string stringByReplacingOccurrencesOfString:@"&amp;" withString:@""];
+        string = [string stringByReplacingOccurrencesOfString:@"&amp;#xD;" withString:@"\n"];
+        //string = [string stringByReplacingOccurrencesOfString:@"&amp;lt;" withString:@"<"];
+        //string = [string stringByReplacingOccurrencesOfString:@"&amp;gt;" withString:@">"];
+        //string = [string stringByReplacingOccurrencesOfString:@"&amp;br" withString:@"\n"];
+    }
+    return string;
+}
+
+/*!
+ @method
+ @abstract 截取年、月、日
+ @param string 网络数据
+ @return 返回日期
+ */
++ (NSString *)getYearByString:(NSString *)string {
+    if (string) {//2016-04-11T09:06:00.55
+        NSArray *array = [string componentsSeparatedByString:@"T"];
+        if (array.count > 0) {
+            return array[0];
+        }
+    }
+    return @"";
+}
+
+/**
+ *  过滤字符串中的特殊字符
+ *
+ *  @param string 需要处理的字符串
+ *
+ *  @return 返回处理后的字符串
+ */
++(NSString*)filterSpecialString:(NSString*)string
+{
+    NSString *encodedString = (NSString *)
+    
+    CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL,(CFStringRef)@"!*'();:@&=+$,/?%#[]",kCFStringEncodingUTF8));
+    
+    return encodedString;
+}
+
+//通过解析24,35,60 这种字符串获取RGBA内容
++ (UIColor *)getColorWithName:(NSString *)name
+{
+    if (name.length == 0)
+    {
+        return nil;
+    }
+    //返回三色值，如：24,35,60
+    NSArray *rgbs = [name componentsSeparatedByString:@","];
+    if (rgbs.count == 3)
+    {
+        float r = [rgbs[0] floatValue];
+        float g = [rgbs[1] floatValue];
+        float b = [rgbs[2] floatValue];
+        UIColor *color = RGBA(r, g, b, 1);
+        return color;
+    }
+    return nil;
+}
+
+@end

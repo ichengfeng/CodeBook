@@ -1,0 +1,182 @@
+//
+//  BDApplicationUtilBase.h
+//  BD
+//
+//  Created by Podinn on 2017/9/11.
+//  Copyright © 2017年 杭州睿创科技有限公司. All rights reserved.
+//
+
+#ifndef BDApplicationUtilBase_h
+#define BDApplicationUtilBase_h
+
+/**
+ @typedef
+ @abstract 酒店类型
+ */
+typedef NS_ENUM(NSInteger, SubScrollViewType) {
+    ButtonAreaType,
+    BrandViewType
+};
+
+/**
+ @typedef
+ @abstract 热门活动广告选项
+ */
+typedef NS_ENUM(NSInteger, AdSelectedType) {
+    AdDetailType = 0,               //广告详情
+    PromotionDetailType,            //促销页详情
+    HotelDatailType,                //酒店详细页
+    HotelSearchType,                //酒店搜索列表
+    NightSearchType,                //夜销搜索列表
+    SomeonePageType,                //某个指定页
+    DetailByLoginType               //等同http链接，需要会员登录
+};
+/*
+ http开头是站外一个url地址，点击banner不跳出APP，在APP里内嵌浏览器打开（实为布丁提供的html5页面）
+ F:ID,到客户端促销页详情，编号为ID，识别为F:开头
+ H:ID,到客户端酒店详细页，酒店编号为ID，识别为H:开头
+ S:ID到客户端酒店搜索列表，ID为城市编号，识别为S:开头
+ Y:ID到客户端夜销搜索列表，ID为城市编号，识别为Y:开头
+ V:view的名称，到客户端某个指定页，识别为V:开头
+ Z:ID,等同http链接，转页面前前需要会员登录，并且调用接口:GetLoginMemID的数据作为querystring链接地ID的地址,querystring字段名为s
+ */
+
+/**
+ 从哪个界面跳到会员卡列表界面
+ */
+typedef enum
+{
+    PushMemberShipCardListFromHome = 0,
+    PushMemberShipCardListFromSumitOrder,//提交订单
+    PushMemberShipCardListFromMyMemberCard, //我的会员卡
+    PushMemberShipCardListFromCashBack, //返现金
+    PushMemberShipCardListFromMyWallet,//我的钱包
+    PushMemberShipCardListFromTopupCardRecharge, //储值卡充值
+    PushMemberShipCardListFromRechargeCenter //充值中心
+}PushMemberShipCardListType;//枚举名称
+
+/**
+ 从哪个界面跳到我的优惠券和特权券列表界面
+ */
+typedef enum
+{
+    PushCouponAndPrivilegeListFromSumitOrder = 0,
+    PushCouponAndPrivilegeListFromOther
+}PushCouponAndPrivilegeListType;//枚举名称
+
+/**
+ 地图用于展示酒店位置／规划路线
+ */
+typedef enum {
+    DispayLocation = 0,
+    PlaningRote
+}MapUseType;
+
+/**
+ 选择哪种路线规划类型
+ */
+typedef enum {
+    MapPlaningRoteByWalkingType = 0,//步行
+    MapPlaningRoteByDrivingType,//驾车
+    MapPlaningRoteByMassTransitType //公交
+}PlaningRoteType;
+
+/**
+ 酒店详情选择的房型活动类型
+ */
+typedef enum {
+    FirstSchedule = 0,//首次入住
+    IntegralExchange, //积分换房
+    BookRoomNormal    //正常预订
+}HotelActivityType;
+
+/**
+ 从哪个界面跳到优惠券列表界面
+ */
+typedef enum
+{
+    PushCouponListFromMy = 0,//我的界面
+    PushCouponListFromSubmitOrder//提交订单
+}PushCouponListType;//枚举名称
+
+/**
+ 从哪个界面跳到优惠券列表界面
+ */
+typedef enum
+{
+    PushCouponUseRuleFromRightBar = 0,//导航栏右边的规则
+    PushCouponUseRuleFromCell//优惠券列表
+}PushCouponUseRuleType;//枚举名称
+
+/**
+ 从哪个界面跳转到商品详情界面
+ */
+typedef enum
+{
+    PushGoodDetailFromSubmitOrder = 0,//导航栏右边的规则
+    PushGoodDetailFromGoodsList//优惠券列表
+}PushGoodDetailType;//枚举名称
+
+//发现界面 点击cell跳转的到对应的视图控制器
+typedef enum {
+    BdFindPageDumpHotActivityType,  //热门活动
+    
+    BDFindPageDumpMembershipCardType, //我的会员卡
+    
+    BDFindPageDumpDynamicControllerType, //动态圈
+    
+    BDFindPageDumpMyCollectHotelType,  //我的酒店收藏
+    
+    BDFindPageDumpCommonTravellerType, //常用旅客
+    
+    BDFindPageDumpMyCommentType,  //酒店评价
+    
+    BDFindPageDumpMoreSettingType,  //更多设置
+    
+    BDFindPageDumpUseHelpType,    //使用帮助
+    
+    BDFindPageDumpFeedBackType,   //留言反馈
+    
+    BDFindPageDumpPushMessageManagerType, //推送消息管理
+    
+    BDFindPageDumpAllOrderType,   //全部订单
+    
+    BDFindPageDumpMyInvoicesType,   //发票列表
+    
+    BDFindPageDumpMyHourCountType,   //钟点点数
+    
+    BDFindPageDumpRegisterType,    //注册
+    
+    BDFindPageDumpRechargeCenterType, //充值中心
+    
+    BDFindPageDumpHotelListType,//酒店列表
+    
+    BDFindPageDumpSigninType, //签到
+    
+    BdFindPageDumpNoDataType   //无此类型
+    
+}BDFindPageDumpControllerType;//枚举名称
+
+
+/**
+ 酒店详情选择的房型活动类型
+ */
+typedef enum {
+    HomeBannerType = 0,//首页的banner
+    DiscountBannerType //特价的banner
+}BannerType;
+
+
+typedef enum {
+    
+    HotelOrderType,    //酒店订单
+    
+    MallOrderType,     //商城订单
+    
+    RechargeOrderType, //充值订单
+    
+    TravelOrderType     //旅游订单
+    
+}PodinnOrderType;//枚举名称
+
+#endif /* BDApplicationUtilBase_h */
